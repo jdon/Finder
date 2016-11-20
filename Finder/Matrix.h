@@ -17,7 +17,7 @@ public:
 	void print();
 	long CreateScore(Matrix* input);
 	Matrix* CreateScoreMatrix(Matrix* Wally, Matrix* CompareMatrix);
-	Matrix* CreateMatrix(int startr, int startc, Matrix* scene);
+	Matrix* Matrix::CreateMatrix(int startWidth, int startHeight, int MatrixWidth, int MatrixHeight);
 	long CreateFuckingScore(Matrix* Wally, Matrix* CompareMatrix);
 	void fillFromFile(string filename);
 	void WritePGM(string filename, int Q);

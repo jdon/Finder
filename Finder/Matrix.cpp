@@ -35,7 +35,7 @@ Matrix::~Matrix()
 
 double* Matrix::get(int width, int height)
 {
-	return &(arr[width][height]);
+		return &(arr[width][height]);
 }
 
 int Matrix::getWidth()
@@ -178,23 +178,23 @@ Matrix* Matrix::CreateScoreMatrix(Matrix* Wally, Matrix* CompareMatrix)
 	return DifferenMatrix;
 }
 
-Matrix* Matrix::CreateMatrix(int startr, int startc, Matrix* scene)
+Matrix* Matrix::CreateMatrix(int startWidth, int startHeight,int MatrixWidth,int MatrixHeight)
 {
-	Matrix* Imagee = new Matrix(36, 49);
-	int rr = 0;
-	int cc = 0;
-	for (int i = startr; i < startr + 36; i++)
+	Matrix* Imagee = new Matrix(MatrixWidth, MatrixHeight);
+	for (int i = startWidth; i < startWidth + MatrixWidth; i++)
 	{
-		for (int j = startc; j < startc + 49; j++)
+		for (int j = startHeight; j < startHeight + MatrixHeight; j++)
 		{
-			double d = *(scene->get(i, j));
+			double d = 0;
+			if (i < this->getWidth() && j < this->getHeight()) 
+			{
+				//safe to get the number or else set it to 0
+				d = *(this->get(i, j));
+			}
 			//cout << "width:" << j << " height:" << i << " " << d << " " << rr << " " << cc << endl;
-			Imagee->set(i- startr, j- startc, d);;
+			Imagee->set(i- startWidth, j- startHeight, d);;
 			//cout << d << endl;
-			cc++;
 		}
-		rr++;
-		cc = 0;
 	}
 	return Imagee;
 }
@@ -224,17 +224,9 @@ Matrix* Matrix::operator-(Matrix& InputedMatrix)
 			double WallyNum = *(this->get(i, j));
 			double ComapreNum = *(InputedMatrix.get(i, j));
 			double diff = WallyNum - ComapreNum;
-			if (diff > 255)
-			{
-				//cout << "problem";
-				cout << "i:" << i << "J:";
-				cout << WallyNum << " " << ComapreNum << " " << diff << endl;
-			}
-			//cout << WallyNum << " " << ComapreNum << " " << diff <<endl;
 			DifferenMatrix->set(i, j, diff);
 		}
 	}
-	//cout << totalDif << endl;
 	return DifferenMatrix;
 }
 Matrix * Matrix::operator-(double InputNum)

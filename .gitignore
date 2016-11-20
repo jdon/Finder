@@ -16,6 +16,8 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+Debug/
+Finder/Debug
 
 # =========================
 # Operating System Files

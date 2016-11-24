@@ -15,47 +15,30 @@ Matrix::Matrix(int width, int height)
 			set(i, j, 0);
 		}
 	}
-	for (int i = 0; i < width; i++)
-	{
-		for (int j = 0; j < height; j++)
-		{
-			set(i, j, 0);
-		}
-	}
 }
 Matrix::~Matrix()
 {
 	for (int i = 0; i < width; i++) 
 	{
-		delete[] arr[i];
+		delete[] this->arr[i];
 	}
-	delete[] arr;
+	delete[] this->arr;
 
 }
 
 double* Matrix::get(int width, int height)
 {
-		return &(arr[width][height]);
+		return &(this->arr[width][height]);
 }
 
 int Matrix::getWidth()
 {
-	return width;
+	return this->width;
 }
 
 int Matrix::getHeight()
 {
-	return height;
-}
-
-void Matrix::setWidth(int widthin)
-{
-	this -> width = widthin;
-}
-
-void Matrix::setHeight(int heightin)
-{
-	this->height = heightin;
+	return this->height;
 }
 
 void Matrix::set(int width, int height, double x)
@@ -214,6 +197,17 @@ Matrix * Matrix::operator*(Matrix & InputedMatrix)
 	return Imagee;
 }
 
+Matrix * Matrix::operator=(Matrix & InputedMatrix)
+{
+	for (int i = 0; i <= InputedMatrix.getWidth(); i++) 
+	{
+		for (int j = 0; j <= InputedMatrix.getHeight(); j++)
+		{
+
+		}
+	}
+}
+
 Matrix* Matrix::operator-(Matrix& InputedMatrix)
 {
 	Matrix* DifferenMatrix = new Matrix(InputedMatrix.getWidth(), InputedMatrix.getHeight());
@@ -229,6 +223,7 @@ Matrix* Matrix::operator-(Matrix& InputedMatrix)
 	}
 	return DifferenMatrix;
 }
+
 Matrix * Matrix::operator-(double InputNum)
 {
 	Matrix* Imagee = new Matrix(this->getWidth(), this->getHeight());
@@ -243,6 +238,7 @@ Matrix * Matrix::operator-(double InputNum)
 	}
 	return Imagee;
 }
+
 double Matrix::Sum()
 {
 	long sum = 0;
@@ -256,10 +252,12 @@ double Matrix::Sum()
 	}
 	return sum;
 }
+
 double Matrix::Mean()
 {
 	return (this->Sum() / (this->getWidth()*this->getHeight()));
 }
+
 long Matrix::CreateFuckingScore(Matrix* Wally, Matrix* CompareMatrix)
 {
 	long totalDif = 0;

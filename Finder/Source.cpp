@@ -1,4 +1,5 @@
 #include "Matrix.h"
+#include "MatchImage.h"
 #include <iostream>
 #include <vector>
 #include <thread>
@@ -20,21 +21,21 @@ void DrawSquare(int WidthToStart, int HeightToStart, Matrix* DawOn, Matrix* ToDr
 		}
 	}
 }
-
 void ScoreMatrix(Matrix* BackGroundMatrix, Matrix* WallyMatrix, Matrix* ToChange) 
 {
-	int lowest = 11000000;
+	int lowest = 101;
 	for (int i = 0; i < BackGroundMatrix->getWidth() - WallyMatrix->getWidth(); i++)
 	{
 		for (int j = 0; j < BackGroundMatrix->getHeight() - WallyMatrix->getHeight(); j++)
 		{
 			Matrix* CreatedMatrix = BackGroundMatrix->CreateMatrix(i, j,WallyMatrix->getWidth(), WallyMatrix->getHeight());
 			Matrix* ScoreMatrix = *(WallyMatrix)-*(CreatedMatrix);
-			long score = WallyMatrix->CreateScore(ScoreMatrix); // sum of squard differences
-			//long score  = WallyMatrix->CreateFuckingScore(WallyMatrix, CreatedMatrix); // squared sum of differences
+			//long score = WallyMatrix->CreateScore(ScoreMatrix); // sum of squard differences
+			long score  = WallyMatrix->CreateFuckingScore(WallyMatrix, CreatedMatrix); // squared sum of differences
+			//cout << "lowest:" << score << " I:" << i << " J:" << j << endl;
 			if (score < lowest)
 			{
-				//lowest = score;
+				lowest = score;
 				cout << "lowest:" << score << " I:" << i << " J:" << j << endl;
 				DrawSquare(i, j, ToChange, WallyMatrix);
 			}
@@ -43,7 +44,6 @@ void ScoreMatrix(Matrix* BackGroundMatrix, Matrix* WallyMatrix, Matrix* ToChange
 		}
 	}
 }
-
 void createPercentage(double cycles, double totalAmount) 
 {
 	//system("cls");
@@ -59,7 +59,7 @@ void NormalisedCorrelation(Matrix* BackGroundMatrix, Matrix* WallyMatrix, Matrix
 {
 	double lowest = 0.12;
 	double cycles = 0;
-	Matrix* WallyMean = (*(WallyMatrix)-WallyMatrix->Mean());
+	Matrix* WallyMean = (*(WallyMatrix)-(WallyMatrix->Mean()));
 	Matrix* WallyBot = *(WallyMean) * *(WallyMean);
 	double WallyBotValue = WallyBot->Sum();
 	for (int i = 0; i < BackGroundMatrix->getWidth() - WallyMatrix->getWidth(); i++)
@@ -68,13 +68,9 @@ void NormalisedCorrelation(Matrix* BackGroundMatrix, Matrix* WallyMatrix, Matrix
 		{
 			//createPercentage(cycles, (((BackGroundMatrix->getWidth() - WallyMatrix->getWidth())*(BackGroundMatrix->getHeight() - WallyMatrix->getHeight())) / 100));
 			Matrix* CreatedMatrix = BackGroundMatrix->CreateMatrix(i, j, WallyMatrix->getWidth(), WallyMatrix->getHeight());
-			/*Matrix* WallyMean = (*(WallyMatrix)-WallyMatrix->Mean());*/
 			Matrix* CreatedMatrixMean = (*(CreatedMatrix)-CreatedMatrix->Mean());
 			Matrix* Multiply = *(WallyMean) * *(CreatedMatrixMean);
 			double TopLine = Multiply->Sum();
-
-			//Matrix* WallyBot = *(WallyMean) * *(WallyMean);
-			//double WallyBotValue = WallyBot->Sum();
 
 			Matrix* CreatedMatrixBot = *(CreatedMatrix) * *(CreatedMatrix);
 			double CreatedMatrixValue = CreatedMatrixBot->Sum();
@@ -82,25 +78,22 @@ void NormalisedCorrelation(Matrix* BackGroundMatrix, Matrix* WallyMatrix, Matrix
 			double sqrtbottom = sqrt(bottom);
 			double score = TopLine / sqrtbottom;
 			//if (score > 0.203)
-			//{
-			//	lowest = score;
-			//	cout << "lowest:" << score << " I:" << i << " J:" << j << endl;
-			//	DrawSquare(i, j, ToChange, WallyMatrix);
-			//}
+			if (score > lowest)
+			{
+				lowest = score;
+				cout << "lowest:" << score << " I:" << i << " J:" << j << endl;
+				DrawSquare(i, j, ToChange, WallyMatrix);
+			}
 			delete CreatedMatrix;
-			/*delete WallyMean;*/
 			delete CreatedMatrixMean;
 			delete Multiply;
-			/*delete WallyBot;*/
 			delete CreatedMatrixBot;
-			//delete ScoreMatrix;
 			cycles++;
 		}
 	}
 	delete WallyMean;
 	delete WallyBot;
 }
-
 double NormalisedCorrelation(Matrix* BackGroundMatrix, Matrix* WallyMatrix,int width, int height)
 {
 	Matrix* CreatedMatrix = BackGroundMatrix->CreateMatrix(width, height, WallyMatrix->getWidth(), WallyMatrix->getHeight());
@@ -191,16 +184,26 @@ void createThread(Matrix* BackGroundMatrix, Matrix* WallyMatrix,int threadnum)
 	}
 }
 
-//Matrix* ReduceMatrixSize(Matrix* MatrixToReduce) 
-//{
-//	for (int i = 0; i < MatrixToReduce->getWidth(); i++) 
-//	{
-//		for (int j = 0; j < MatrixToReduce->getHeight(); j++)
-//		{
-//
-//		}
-//	}
-//}
+Matrix* ReduceMatrixSize(Matrix* MatrixToReduce) 
+{
+	int width = (int)round(MatrixToReduce->getWidth() / 2);
+	int height = (int)round((MatrixToReduce->getHeight() / 2)+0.5);
+	Matrix* Reduced = new Matrix(width, height);
+	cout << width << " " << height << endl;
+	int ired = 0;
+	int jred = 0;
+	for (int i = 0; i < MatrixToReduce->getWidth(); i+=2) 
+	{
+		for (int j = 0; j < MatrixToReduce->getHeight(); j+=2)
+		{
+			Matrix* pixel = MatrixToReduce->CreateMatrix(i, j, 2, 2);
+			double mean = pixel->Mean();
+			Reduced->set((int)(i/2), (int)(j/2),mean);
+			delete pixel;
+		}
+	}
+	return Reduced;
+}
 
 int main() 
 {
@@ -212,9 +215,18 @@ int main()
 
 	Matrix* ToChange = new Matrix(1024, 768);
 	ToChange->fillFromFile("Cluttered_scene.txt");
-	
-	//ScoreMatrix(BackGroundMatrix, WallyMatrix, ToChange);
-	//ToChange->WritePGM("drawspuare.pgm", 255);
+	Matrix* Redu = ReduceMatrixSize(BackGroundMatrix);
+	Matrix* change = ReduceMatrixSize(BackGroundMatrix);
+	Matrix* WallyRedu = ReduceMatrixSize(WallyMatrix);
+	NormalisedCorrelation(Redu, WallyRedu, change);
+	change->WritePGM("testssss.pgm", 255);
+	WallyRedu->WritePGM("wallysmall.pgm", 255);
+
+
+	MatchImage test(10, 10);
+	//WallyMatrix->print();
+	//WallyRedu->print();
+	//system("pause");
 	//thread t[4];
 	//for (int i = 0; i < 4; i++) 
 	//{
@@ -228,8 +240,9 @@ int main()
 	//	cout << "thread " << i << "finished";
 	//	t[i].join();
 	//}
-	NormalisedCorrelation(BackGroundMatrix, WallyMatrix,ToChange);
-	ToChange->WritePGM("drawspuare.pgm", 255);
+	//NormalisedCorrelation(BackGroundMatrix, WallyMatrix,ToChange);
+	//ToChange->WritePGM("drawspuare.pgm", 255);
+	//delete Redu;
 	delete WallyMatrix;
 	delete BackGroundMatrix;
 	//delete ToChange;

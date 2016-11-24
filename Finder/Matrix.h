@@ -11,8 +11,6 @@ public:
 	double* get(int width, int height);
 	int getWidth();
 	int getHeight();
-	void setWidth(int rowIn);
-	void setHeight(int colIn);
 	void set(int width, int height, double x);
 	void print();
 	long CreateScore(Matrix* input);
@@ -24,6 +22,7 @@ public:
 	Matrix* operator-(Matrix& InputedMatrix);
 	Matrix* operator-(double InputNum);
 	Matrix* operator*(Matrix& InputedMatrix);
+	Matrix* operator=(Matrix& InputedMatrix);
 	double Mean();
 	double Sum();
 

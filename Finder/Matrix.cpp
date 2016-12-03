@@ -6,11 +6,11 @@ Matrix::Matrix(int width, int height)
 {
 	this->width = width;
 	this->height = height;
-	arr = new double*[width];
-	for (int i = 0; i < width; i++) 
+	arr = new double*[this->width];
+	for (int i = 0; i < this->width; i++)
 	{
-		arr[i] = new double[height];
-		for (int j = 0; j < height; j++)
+		arr[i] = new double[this->height];
+		for (int j = 0; j < this->height; j++)
 		{
 			set(i, j, 0);
 		}
@@ -199,11 +199,24 @@ Matrix * Matrix::operator*(Matrix & InputedMatrix)
 
 Matrix * Matrix::operator=(Matrix & InputedMatrix)
 {
-	for (int i = 0; i <= InputedMatrix.getWidth(); i++) 
+	//delete the old data in the matrix and set the new data
+	for (int i = 0; i < width; i++)
 	{
-		for (int j = 0; j <= InputedMatrix.getHeight(); j++)
-		{
+		delete[] this->arr[i];
+	}
+	delete[] this->arr;
 
+	this->width = InputedMatrix.getWidth();
+	this->height = InputedMatrix.getHeight();
+
+	arr = new double*[this->width];
+
+	for (int i = 0; i < this->width; i++)
+	{
+		arr[i] = new double[this->height];
+		for (int j = 0; j < this->height; j++)
+		{
+			this->set(i, j, *(InputedMatrix.get(i,j)));
 		}
 	}
 }

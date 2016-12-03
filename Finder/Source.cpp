@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 #include <thread>
+#include <sstream>
 using namespace std;
 
 
@@ -183,7 +184,6 @@ void createThread(Matrix* BackGroundMatrix, Matrix* WallyMatrix,int threadnum)
 		break;
 	}
 }
-
 Matrix* ReduceMatrixSize(Matrix* MatrixToReduce) 
 {
 	int width = (int)round(MatrixToReduce->getWidth() / 2);
@@ -205,8 +205,87 @@ Matrix* ReduceMatrixSize(Matrix* MatrixToReduce)
 	return Reduced;
 }
 
+int getNum(string numberName) 
+{
+	int num = 0;
+	do 
+	{
+		cout << numberName << endl;
+		cin >> num;
+		cin.clear();
+		cin.ignore();
+		if (num > 0) 
+		{
+			return num;
+		}
+	} while (num == 0 || num < 0);
+}
+
+Matrix* getTextFile(string fileName)
+{
+	bool fileBad = true;
+	do
+	{
+		string input_Scene;
+		stringstream input_SceneStream;
+		string parsed;
+		cout << "Please select "<< fileName <<" text file" << endl;
+		getline(cin, input_Scene);
+		ifstream file(input_Scene);
+		if (file.good())
+		{
+			if (input_Scene.substr(input_Scene.find_last_of(".") + 1) == "txt")
+			{
+				//file is a text file
+				fileBad = false;
+				int width = getNum("width");
+				int height = getNum("height");
+				Matrix* matrix = new Matrix(width, height);
+				matrix->fillFromFile(input_Scene);
+				return matrix;
+			}
+			else
+			{
+				cout << input_Scene << " is not a text file" << endl;
+			}
+		}
+		else
+		{
+			cout << input_Scene << " does not exist" << endl;
+		}
+	} while (fileBad);
+}
+
+void Menu() 
+{
+	int amount;
+	do 
+	{
+		cout << "1) Sum of squared difference" << endl;
+		cout << "2) Squared sum of differences" << endl;
+		cout << "3) Normalised correlation" << endl;
+		switch (getNum("Enter your choice")) 
+		{
+		case 1:
+			amount = getNum("How many matches would you like?");
+			break;
+		case 2:
+			amount = getNum("How many matches would you like?");
+			break;
+		case 3:
+			amount = getNum("How many matches would you like?");
+			break;
+		default: break;
+		}
+	} while (true);
+}
 int main() 
 {
+	Menu();
+	Matrix* Background =  getTextFile("background");
+	Matrix* Wally = getTextFile("wally");
+	//fileDetails Wally = getTextFile("wally");
+	system("pause");
 	Matrix* WallyMatrix = new Matrix(36, 49);
 	WallyMatrix->fillFromFile("Wally_grey.txt");
 
@@ -221,8 +300,6 @@ int main()
 	NormalisedCorrelation(Redu, WallyRedu, change);
 	change->WritePGM("testssss.pgm", 255);
 	WallyRedu->WritePGM("wallysmall.pgm", 255);
-
-
 	MatchImage test(10, 10);
 	//WallyMatrix->print();
 	//WallyRedu->print();

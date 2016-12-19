@@ -23,6 +23,7 @@ public:
 	Matrix* operator-(double InputNum);
 	Matrix* operator*(Matrix& InputedMatrix);
 	Matrix* operator=(Matrix& InputedMatrix);
+	Matrix* reduce();
 	double Mean();
 	double Sum();
 

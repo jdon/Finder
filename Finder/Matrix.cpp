@@ -1,6 +1,4 @@
 #include "Matrix.h"
-#include <array>;
-#include <iostream>;
 using namespace std;
 Matrix::Matrix(int width, int height)
 {
@@ -181,6 +179,7 @@ Matrix* Matrix::CreateMatrix(int startWidth, int startHeight,int MatrixWidth,int
 	}
 	return Imagee;
 }
+
 Matrix * Matrix::operator*(Matrix & InputedMatrix)
 {
 	Matrix* Imagee = new Matrix(this->getWidth(), this->getHeight());
@@ -219,6 +218,27 @@ Matrix * Matrix::operator=(Matrix & InputedMatrix)
 			this->set(i, j, *(InputedMatrix.get(i,j)));
 		}
 	}
+}
+
+Matrix * Matrix::reduce()
+{
+	int width = (int)round(this->width / 2);
+	int height = (int)round((this->getHeight() / 2) + 0.5);
+	Matrix* Reduced = new Matrix(width, height);
+	cout << width << " " << height << endl;
+	int ired = 0;
+	int jred = 0;
+	for (int i = 0; i < this->getWidth(); i += 2)
+	{
+		for (int j = 0; j < this->getHeight(); j += 2)
+		{
+			Matrix* pixel = this->CreateMatrix(i, j, 2, 2);
+			double mean = pixel->Mean();
+			Reduced->set((int)(i / 2), (int)(j / 2), mean);
+			delete pixel;
+		}
+	}
+	return Reduced;
 }
 
 Matrix* Matrix::operator-(Matrix& InputedMatrix)

@@ -236,6 +236,15 @@ string getString(string toAsk, string defaultString)
 {
 	string input;
 	cout << toAsk << "(" << defaultString << ")";
+	getline(cin, input);
+	if (input.empty()) 
+	{
+		return defaultString;
+	}
+	else 
+	{
+		return input;
+	}
 }
 
 void Menu(vector<MatrixScore>* ncScores, vector<MatrixScore>* sdiffScores ,string BackgroundTextFile, int BackgroundWidth, int BackgroundHeight, Matrix* WallyMatrix)
@@ -264,7 +273,7 @@ void Menu(vector<MatrixScore>* ncScores, vector<MatrixScore>* sdiffScores ,strin
 					MatrixScore ms = ncScores->at(i);
 					DrawSquare(ms.MatrixStartWidth, ms.MatrixStartHeight, Tochange, WallyMatrix);
 				}
-				Tochange->WritePGM("Output.pgm", 255);
+				Tochange->WritePGM(getString("Name of pgm file","output")+".pgm", 255);
 			}
 			break;
 		}
@@ -284,7 +293,7 @@ void Menu(vector<MatrixScore>* ncScores, vector<MatrixScore>* sdiffScores ,strin
 					cout << " writing... " << ms.MatrixStartWidth << " " << ms.MatrixStartHeight;
 					DrawSquare(ms.MatrixStartWidth, ms.MatrixStartHeight, Tochange, WallyMatrix);
 				}
-				Tochange->WritePGM("Output.pgm", 255);
+				Tochange->WritePGM(getString("Name of pgm file", "output") + ".pgm", 255);
 			}
 			break;
 		}

@@ -2,16 +2,7 @@
 c:\users\jdon\documents\visual studio 2015\projects\finder\finder\matrix.h(2): warning C4067: unexpected tokens following preprocessor directive - expected a newline
 c:\users\jdon\documents\visual studio 2015\projects\finder\finder\matrix.h(3): warning C4067: unexpected tokens following preprocessor directive - expected a newline
 c:\users\jdon\documents\visual studio 2015\projects\finder\finder\matrix.h(4): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-c:\users\jdon\documents\visual studio 2015\projects\finder\finder\source.cpp(49): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-  Matrix.cpp
-c:\users\jdon\documents\visual studio 2015\projects\finder\finder\matrix.h(2): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-c:\users\jdon\documents\visual studio 2015\projects\finder\finder\matrix.h(3): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-c:\users\jdon\documents\visual studio 2015\projects\finder\finder\matrix.h(4): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-c:\users\jdon\documents\visual studio 2015\projects\finder\finder\matrix.cpp(2): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-c:\users\jdon\documents\visual studio 2015\projects\finder\finder\matrix.cpp(3): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-c:\users\jdon\documents\visual studio 2015\projects\finder\finder\matrix.cpp(142): warning C4244: 'initializing': conversion from 'double' to 'long', possible loss of data
-c:\users\jdon\documents\visual studio 2015\projects\finder\finder\matrix.cpp(249): warning C4244: '+=': conversion from 'double' to 'long', possible loss of data
-c:\users\jdon\documents\visual studio 2015\projects\finder\finder\matrix.cpp(271): warning C4244: '+=': conversion from 'double' to 'long', possible loss of data
-  Generating Code...
+c:\users\jdon\documents\visual studio 2015\projects\finder\finder\source.cpp(113): warning C4715: 'getNum': not all control paths return a value
+c:\users\jdon\documents\visual studio 2015\projects\finder\finder\source.cpp(146): warning C4715: 'getTextFile': not all control paths return a value
   Finder.vcxproj -> C:\Users\Jdon\documents\visual studio 2015\Projects\Finder\Debug\Finder.exe
   Finder.vcxproj -> C:\Users\Jdon\documents\visual studio 2015\Projects\Finder\Debug\Finder.pdb (Full PDB)

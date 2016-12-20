@@ -14,6 +14,7 @@ Matrix::Matrix(int width, int height)
 		}
 	}
 }
+
 Matrix::~Matrix()
 {
 	for (int i = 0; i < width; i++) 
@@ -118,6 +119,7 @@ void Matrix::WritePGM(const string filename, int Q)
 
 	delete[] image;
 }
+
 long Matrix::CreateScore(Matrix* input)
 {
 	long sum = 0;
@@ -133,30 +135,6 @@ long Matrix::CreateScore(Matrix* input)
 	}
 	//cout << endl << sum << endl;
 	return sum;
-}
-
-Matrix* Matrix::CreateScoreMatrix(Matrix* Wally, Matrix* CompareMatrix)
-{
-	Matrix* DifferenMatrix = new Matrix(Wally->getWidth(), Wally->getHeight());
-	for (int i = 0; i < Wally->getWidth(); i++)
-	{
-		for (int j = 0; j < Wally->getHeight(); j++)
-		{
-			double WallyNum = *(Wally->get(i, j));
-			double ComapreNum = *(CompareMatrix->get(i, j));
-			double diff = abs(WallyNum - ComapreNum);
-			if (diff > 255)
-			{
-				//cout << "problem";
-				cout << "i:" << i << "J:";
-				cout << WallyNum << " " << ComapreNum << " " << diff << endl;
-			}
-			//cout << WallyNum << " " << ComapreNum << " " << diff <<endl;
-			DifferenMatrix->set(i, j, diff);
-		}
-	}
-	//cout << totalDif << endl;
-	return DifferenMatrix;
 }
 
 Matrix* Matrix::CreateMatrix(int startWidth, int startHeight,int MatrixWidth,int MatrixHeight)
@@ -218,14 +196,14 @@ Matrix * Matrix::operator=(Matrix & InputedMatrix)
 			this->set(i, j, *(InputedMatrix.get(i,j)));
 		}
 	}
+	return this;
 }
 
-Matrix * Matrix::reduce()
+void Matrix::reduce()
 {
 	int width = (int)round(this->width / 2);
 	int height = (int)round((this->getHeight() / 2) + 0.5);
 	Matrix* Reduced = new Matrix(width, height);
-	cout << width << " " << height << endl;
 	int ired = 0;
 	int jred = 0;
 	for (int i = 0; i < this->getWidth(); i += 2)
@@ -238,7 +216,8 @@ Matrix * Matrix::reduce()
 			delete pixel;
 		}
 	}
-	return Reduced;
+	*this = *Reduced;
+	delete Reduced;
 }
 
 Matrix* Matrix::operator-(Matrix& InputedMatrix)
@@ -251,6 +230,7 @@ Matrix* Matrix::operator-(Matrix& InputedMatrix)
 			double WallyNum = *(this->get(i, j));
 			double ComapreNum = *(InputedMatrix.get(i, j));
 			double diff = WallyNum - ComapreNum;
+			//cout << diff << endl;
 			DifferenMatrix->set(i, j, diff);
 		}
 	}
@@ -272,15 +252,15 @@ Matrix * Matrix::operator-(double InputNum)
 	return Imagee;
 }
 
-double Matrix::Sum()
+long Matrix::Sum()
 {
 	long sum = 0;
 	for (int i = 0; i < this->getWidth(); i++)
 	{
 		for (int j = 0; j < this->getHeight(); j++)
 		{
-			double CurrentMatrixValue = *(this->get(i, j));
-			sum += CurrentMatrixValue;
+			int CurrentMatrixValue = *(this->get(i, j));
+			sum = sum + CurrentMatrixValue;
 		}
 	}
 	return sum;
@@ -289,24 +269,4 @@ double Matrix::Sum()
 double Matrix::Mean()
 {
 	return (this->Sum() / (this->getWidth()*this->getHeight()));
-}
-
-long Matrix::CreateFuckingScore(Matrix* Wally, Matrix* CompareMatrix)
-{
-	long totalDif = 0;
-	for (int i = 0; i < Wally->getWidth(); i++)
-	{
-		for (int j = 0; j < Wally->getHeight(); j++)
-		{
-			double WallyNum = *(Wally->get(i, j));
-			double ComapreNum = *(CompareMatrix->get(i, j));
-			double diff = abs(WallyNum - ComapreNum);
-			//cout << WallyNum << " " << ComapreNum << " " << diff << " " << totalDif << endl;
-			totalDif += diff;
-		}
-	}
-	//cout << totalDif << endl;
-	totalDif = totalDif / 1764;
-	totalDif = totalDif * totalDif;
-	return  totalDif;
 }

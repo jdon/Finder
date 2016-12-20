@@ -1,80 +1,57 @@
 #include "LargeImage.h"
 using namespace std;
 
-LargeImage::LargeImage(int width, int height, string Filename) : Matrix(width, height)
+LargeImage::LargeImage(string Filename, int width, int height) : Matrix(width, height)
 {
 	//populates the largeImage
 	fillFromFile(Filename);
 }
 
-double LargeImage::NormalisedCorrelation(Matrix * WallyMatrix, int width, int height)
+double LargeImage::NormalisedCorrelation(Matrix * Template, int width, int height, Matrix* WallyMean, Matrix* wallySquared)
 {
-	Matrix* CreatedMatrix = this->CreateMatrix(width, height, WallyMatrix->getWidth(), WallyMatrix->getHeight());
-	Matrix* WallyMean = (*(WallyMatrix)-WallyMatrix->Mean());
-	Matrix* CreatedMatrixMean = (*(CreatedMatrix)-CreatedMatrix->Mean());
-	Matrix* Multiply = *(WallyMean) * *(CreatedMatrixMean);
-	double TopLine = Multiply->Sum();
 
-	Matrix* WallyBot = *(WallyMean) * *(WallyMean);
-	double WallyBotValue = WallyBot->Sum();
-	Matrix* CreatedMatrixBot = *(CreatedMatrix) * *(CreatedMatrix);
-	double CreatedMatrixValue = CreatedMatrixBot->Sum();
-	double bottom = WallyBotValue*CreatedMatrixValue;
-	double sqrtbottom = sqrt(bottom);
+	//Gets block of the cluttered scene image using the current row and col value and the size of the wally image
+	Matrix* CreatedMatrix = this->CreateMatrix(width, height, Template->getWidth(), Template->getHeight());
 
-	//cout << "topLine:" << TopLine << "wallyBotValue: " << WallyBotValue << " CreatedMatrixValue:" << CreatedMatrixValue << " bottom:" << bottom << "sqrtbottom" << sqrtbottom << endl;
+	Matrix* CreatedMatrixMean = *CreatedMatrix - CreatedMatrix->Mean();
 
-	double score = TopLine / sqrtbottom;
-	//cout << "score:" << score;
-	delete CreatedMatrix;
-	delete WallyMean;
-	delete CreatedMatrixMean;
+	Matrix* Multiply = *WallyMean * *CreatedMatrixMean;
+	double topline = Multiply->Sum();
+
+	Matrix* CreatedSquared = (*CreatedMatrixMean * *CreatedMatrixMean);
+
+	double WallySq = wallySquared->Sum();
+	double blockSq = CreatedSquared->Sum();
+
+	double bottomline = sqrt(WallySq * blockSq);
+
+	//Calculate NNS score
+	double score = (topline / bottomline);
+
 	delete Multiply;
-	delete WallyBot;
-	delete CreatedMatrixBot;
+	delete CreatedMatrix;
+	delete CreatedMatrixMean;
+	delete CreatedSquared;
 	return score;
 }
 
-double LargeImage::SumOfSquaredDiff(Matrix * WallyMatrix, int width, int height)
+long LargeImage::SumOfSquaredDiff(Matrix * WallyMatrix, int width, int height)
 {
 	Matrix* CreatedMatrix = this->CreateMatrix(width, height, WallyMatrix->getWidth(), WallyMatrix->getHeight());
 	Matrix* DifferenceMatrix = *(WallyMatrix)-*(CreatedMatrix);
-	long score = WallyMatrix->CreateScore(DifferenceMatrix); // sum of squard differences
+	long score = 0;
+	for (int i = 0; i < DifferenceMatrix->getWidth(); i++)
+	{
+		for (int j = 0; j < DifferenceMatrix->getHeight(); j++)
+		{
+			double diff = *(DifferenceMatrix->get(i, j));
+			//cout << diff << " " << diff*diff << " ";
+			long SquareDiff = diff * diff;
+			score += SquareDiff;
+		}
+	}
 	delete CreatedMatrix;
 	delete DifferenceMatrix;
 	return score;
 }
 
-double LargeImage::SquaredSumDiff(Matrix * WallyMatrix, int width, int height)
-{
-	Matrix* CreatedMatrix = this->CreateMatrix(width, height, WallyMatrix->getWidth(), WallyMatrix->getHeight());
-	Matrix* DifferenceMatrix = *(WallyMatrix)-*(CreatedMatrix);
-	long score = WallyMatrix->CreateFuckingScore(WallyMatrix, CreatedMatrix); // squared sum of differences
-	delete CreatedMatrix;
-	delete DifferenceMatrix;
-	return score;
-}
-
-//double LargeImage::Score(int type, bool threading, Matrix* WallyMatrix)
-//{
-//	int lowest = 1010000000;
-//	for (int i = 0; i < this->getWidth() - WallyMatrix->getWidth(); i++)
-//	{
-//		for (int j = 0; j < this->getHeight() - WallyMatrix->getHeight(); j++)
-//		{
-//			Matrix* CreatedMatrix = this->CreateMatrix(162, 144, WallyMatrix->getWidth(), WallyMatrix->getHeight());
-//			Matrix* DifferenceMatrix = *(WallyMatrix)-*(CreatedMatrix);
-//			long score = WallyMatrix->CreateScore(DifferenceMatrix); // sum of squard differences
-//			long score  = WallyMatrix->CreateFuckingScore(WallyMatrix, CreatedMatrix); // squared sum of differences
-//			cout << "lowest:" << score << " I:" << i << " J:" << j << endl;
-//			if (score < lowest)
-//			{
-//				lowest = score;
-//				cout << "lowest:" << score << " I:" << i << " J:" << j << endl;
-//				DrawSquare(i, j, ToChange, WallyMatrix);
-//			}
-//			delete CreatedMatrix;
-//			delete DifferenceMatrix;
-//		}
-//	}
-//}

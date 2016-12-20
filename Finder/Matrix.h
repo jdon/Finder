@@ -14,18 +14,16 @@ public:
 	void set(int width, int height, double x);
 	void print();
 	long CreateScore(Matrix* input);
-	Matrix* CreateScoreMatrix(Matrix* Wally, Matrix* CompareMatrix);
 	Matrix* Matrix::CreateMatrix(int startWidth, int startHeight, int MatrixWidth, int MatrixHeight);
-	long CreateFuckingScore(Matrix* Wally, Matrix* CompareMatrix);
 	void fillFromFile(string filename);
 	void WritePGM(string filename, int Q);
 	Matrix* operator-(Matrix& InputedMatrix);
 	Matrix* operator-(double InputNum);
 	Matrix* operator*(Matrix& InputedMatrix);
 	Matrix* operator=(Matrix& InputedMatrix);
-	Matrix* reduce();
+	void reduce();
 	double Mean();
-	double Sum();
+	long Sum();
 
 private:
 	int width;

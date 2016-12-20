@@ -6,9 +6,8 @@ using namespace std;
 class LargeImage : public Matrix 
 {
 public:
-	LargeImage(int width, int height, string Filename);
-	double LargeImage::NormalisedCorrelation(Matrix* WallyMatrix, int width, int height);
-	double LargeImage::SumOfSquaredDiff(Matrix* WallyMatrix, int width, int height);
-	double LargeImage::SquaredSumDiff(Matrix* WallyMatrix, int width, int height);
+	LargeImage(string Filename, int width, int height);
+	double LargeImage::NormalisedCorrelation(Matrix* WallyMatrix, int width, int height, Matrix* WallyMean, Matrix* wallySquared);
+	long LargeImage::SumOfSquaredDiff(Matrix* WallyMatrix, int width, int height);
 };
 #endif
